@@ -1,40 +1,18 @@
 import Data.List
 import System.IO
 
-class Matcher a where
-  matches :: a -> a -> Bool
+sayHi = do
+  putStrLn "Whats your name?"
+  name <- getLine
+  putStrLn $ "Hi " ++ name
 
-class MyEq a where
-  areEqual :: a -> a -> Bool
+writeToFile = do
+  file <- openFile "test.txt" WriteMode
+  hPutStrLn file "random line of text"
+  hClose file
 
-data ShirtSize = S | M | L
-
-instance MyEq ShirtSize where
-  areEqual S S = True
-  areEqual M M = True
-  areEqual L L = True
-  areEqual _ _ = False
-
-data User = User
-  { name :: String,
-    email :: String,
-    age :: Integer,
-    interests :: [String]
-  }
-  deriving (Show)
-
-peter =
-  User
-    { name = "Pedro Cleto",
-      email = "cl3t0.sh@gmail.com",
-      age = 19,
-      interests = ["Math", "Computers", "One Piece", "Competitive Games"]
-    }
-
-dave =
-  User
-    { name = "Davi",
-      email = "daviciencia1@gmail.com",
-      age = 18,
-      interests = ["Action Games", "Computers", "One Piece", "The Boys"]
-    }
+readFromFile = do
+  file2 <- openFile "test.txt" ReadMode
+  fileContent <- hGetContents file2
+  putStr fileContent
+  hClose file2
