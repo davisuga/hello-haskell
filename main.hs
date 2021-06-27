@@ -1,4 +1,10 @@
+{-# LANGUAGE NoMonomorphismRestriction #-}
+
+module HelloHaskell where
+
+import Data.Foldable
 import Data.List
+import GHC.Records
 import System.IO
 
 fib = 1 : 1 : [a + b | (a, b) <- zip fib (tail fib)]
@@ -48,3 +54,24 @@ doMath a b = [1]
 a >< b
   | length a /= length b = Nothing
   | otherwise = Just $ doMath a b
+
+sum = foldr (+) 0
+
+data Author = Author
+  { name :: String,
+    bio :: String
+  }
+  deriving (Show, Read)
+
+data Book = Book
+  { title :: String,
+    isbn :: Int,
+    author :: String
+  }
+  deriving (Show, Read)
+
+instance Eq Book where
+  (==) (book_a) (book_b) = isbn book_a == isbn book_b
+
+main = do
+  putStrLn "Hello, Haskell!"
