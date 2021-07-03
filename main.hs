@@ -1,12 +1,11 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
-module HelloHaskell where
+module Main where
 
 import Data.Char (toUpper)
-import Data.Foldable
-import Data.List
-import GHC.Records
-import System.IO
+import Data.List (elemIndex)
+import Data.Maybe (fromJust)
+import System.Environment (getArgs, getProgName, lookupEnv)
 
 fib = 1 : 1 : [a + b | (a, b) <- zip fib (tail fib)]
 
@@ -23,6 +22,12 @@ has [] _ = False
 has list el
   | el == last list = True
   | otherwise = has (init list) el
+
+contains [] _ = False
+contains _ [] = False
+contains list (el : elms)
+  | list `has` el = True
+  | otherwise = list `contains` elms
 
 inside x xs = has xs x
 
@@ -86,8 +91,34 @@ a |> b = b . a
 
 greet name = putStrLn $ "Hello, " ++ name ++ "!"
 
-main = do
+askName = do
   putStrLn "What is your name?"
   getLine >>= (mapAndUpper |> greet)
   putStrLn "How old are you?"
   getLine >>= (read |> determineDestination |> putStrLn)
+
+myShell = do
+  shell <- lookupEnv "SHELL"
+  putStrLn $ maybe "No shell variable found" ("Your shell is " ++) shell
+
+showHelp =
+  getProgName
+    >>= (\name -> putStrLn $ "Usage: ./" ++ name ++ " [--help | -h | --interact | -i] <name>")
+
+showVersion = putStrLn "1.0"
+
+determineOption :: [String] -> IO ()
+determineOption [] = putStrLn "Nobody to greet :/"
+determineOption args
+  | args `contains` ["--help", "-h"] = showHelp
+  | args `contains` ["--interact", "-i"] = askName
+  | otherwise = greet $ head args
+
+log x = do
+  print x
+  return x
+
+flatMap = (>>=)
+
+main = do
+  getArgs >>= Main.log >>= determineOption
