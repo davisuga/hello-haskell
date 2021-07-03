@@ -2,6 +2,7 @@
 
 module HelloHaskell where
 
+import Data.Char (toUpper)
 import Data.Foldable
 import Data.List
 import GHC.Records
@@ -38,7 +39,7 @@ isAsc (x : xs)
 
 isAsc2 [] = True
 isAsc2 [x] = True
-isAsc2 (x : y : xs) = (x <= y) && isAsc2 (y : xs)
+isAsc2 (x : y : xs) = x <= y && isAsc2 (y : xs)
 
 exampleGraph = [(1, 2), (2, 3), (1, 4), (5, 3), (2, 5)]
 
@@ -71,7 +72,22 @@ data Book = Book
   deriving (Show, Read)
 
 instance Eq Book where
-  (==) (book_a) (book_b) = isbn book_a == isbn book_b
+  (==) book_a book_b = isbn book_a == isbn book_b
+
+determineDestination age
+  | age < 14 = "go to elementary school"
+  | age < 17 = "go to secondary school"
+  | age < 23 = "go to university... or not"
+  | otherwise = "go get a job... or go sell your art!"
+
+mapAndUpper = map toUpper
+
+a |> b = b . a
+
+greet name = putStrLn $ "Hello, " ++ name ++ "!"
 
 main = do
-  putStrLn "Hello, Haskell!"
+  putStrLn "What is your name?"
+  getLine >>= (mapAndUpper |> greet)
+  putStrLn "How old are you?"
+  getLine >>= (read |> determineDestination |> putStrLn)
