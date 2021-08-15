@@ -4,6 +4,10 @@ module FunFunctions where
 
 import Data.Char (toUpper)
 
+fibs = 1 : 1 : [a + b | (a, b) <- zip fibs (tail fibs)]
+
+fib x = fibs !! x
+
 asc :: Int -> Int -> [Int]
 asc start end
   | start > end = []
@@ -50,7 +54,7 @@ a >< b
   | length a /= length b = Nothing
   | otherwise = Just $ doMath a b
 
-sum = foldr (+) 0
+sum = foldr (Prelude.+) 0
 
 mapAndUpper = map toUpper
 
